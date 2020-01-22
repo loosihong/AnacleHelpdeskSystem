@@ -1,0 +1,20 @@
+//Common variables
+$caption-width-web: 192px;
+$content-normal-max-height-web: calc(100vh - 64px); //(screen height) - (top-app-bar height)
+$content-tab-max-height-web: calc(100vh - 112px); //(screen height) - (top-app-bar height) - (tab-bar height)
+$content-width-web: calc(100vw - 300px); //(screen width) - (drawer width)
+$mdc-drawer-width-web: 280px;
+$spacing-web: 8px;
+
+$caption-width-mobile: 128px;
+$content-normal-max-height-mobile: calc(100vh - 56px); //(screen height) - (top-app-bar height)
+$content-tab-max-height-mobile: calc(100vh - 104px); //(screen height) - (top-app-bar height) - (tab-bar height)
+$mdc-drawer-width-mobile: 100%;
+$mobile-viewport-width-limit: 480px;
+$spacing-mobile: 4px;
+
+//MDC variables
+$mdc-theme-primary: #dd0000;
+$mdc-theme-secondary: #dd0000;
+$mdc-theme-on-primary: #ffffff;
+$mdc-theme-on-secondary: #ffffff;

@@ -1,0 +1,96 @@
+//Common custom CSS
+body {
+  margin: 0px;
+  overflow: hidden;
+   height: 100%;
+}
+
+html {
+  height: 100%;
+}
+
+.caption {
+  width: $caption-width-web;
+}
+
+.content-normal {
+  overflow-y: auto;
+  max-height: $content-normal-max-height-web;
+  height: 100%;
+}
+
+.hide {
+  display: none;
+}
+
+.tab {
+  padding: $spacing-web;
+}
+
+.tablist {
+  overflow-y: auto;
+  margin-top: 48px;
+  max-height: $content-tab-max-height-web;
+  height: 100%;
+}
+
+//MDC custom CSS
+.mdc-button {
+  margin: $spacing-web;
+}
+
+.mdc-data-table {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: $spacing-web;
+  margin-bottom: $spacing-web;
+}
+
+.mdc-drawer {
+  width: $mdc-drawer-width-web;
+}
+
+.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+  margin-left: $mdc-drawer-width-web;
+}
+
+.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content > .mdc-tab-bar,
+.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content > .tablist {
+  width: $content-width-web;
+}
+
+.mdc-drawer-app-content {
+  height: 100%;
+}
+
+.mdc-tab-bar {
+  position: fixed;
+  background-color: white;
+  z-index: 1;
+}
+
+.mdc-select {
+  margin-top: $spacing-web;
+  margin-bottom: $spacing-web;  
+}
+
+.mdc-select__anchor {
+  min-width: 50%;
+  max-width: 100%;
+}
+
+.mdc-select__menu {
+  min-width: 50% !important;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.mdc-text-field {
+  margin-top: $spacing-web;
+  margin-bottom: $spacing-web;
+}
+
+.mdc-top-app-bar {
+  z-index: 7;
+  position: absolute;
+}

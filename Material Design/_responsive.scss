@@ -1,0 +1,56 @@
+@import "@material/snackbar/mdc-snackbar";
+
+//Applicable to mobile screen
+@media screen and (max-width: $mobile-viewport-width-limit) {
+  .caption {
+    width: $caption-width-mobile;
+  }
+
+  .content-normal {
+    max-height: $content-normal-max-height-mobile;
+  }
+  
+  .tablist {
+    max-height: $content-tab-max-height-mobile;
+  }
+
+  //MDC CSS
+  .mdc-button {
+    margin: $spacing-mobile;
+  }
+  
+  .mdc-data-table {
+    margin-top: $spacing-mobile;
+    margin-bottom: $spacing-mobile;
+  }
+  
+  .mdc-drawer {
+    width: $mdc-drawer-width-mobile;
+  }
+
+  .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 0px;
+  }
+  
+  .mdc-select__anchor {
+    margin-top: $spacing-mobile;
+    margin-bottom: $spacing-mobile;
+    width: 100%;
+  }
+  
+  .mdc-select__menu {
+    width: 100%;
+  }
+
+  .mdc-text-field {
+    margin-top: $spacing-mobile;
+    margin-bottom: $spacing-mobile;
+  }
+}
+
+//Applicable to web screen
+@media screen and (min-width: $mobile-viewport-width-limit) {
+  .mdc-snackbar {
+    @include mdc-snackbar-viewport-margin($mdc-snackbar-viewport-margin-wide);
+  }
+}
