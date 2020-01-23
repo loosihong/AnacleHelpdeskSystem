@@ -1,0 +1,70 @@
+﻿@*@inject IJSRuntime JSRuntime*@
+@typeparam TValueType
+
+<div style="width:100%; display:grid;">
+    <label class="caption">@Caption</label>
+    <div class="mdc-form-field" style="display:block;">
+        @if (Items == null)
+        {
+            <p>Loading ...</p>
+        }
+        else
+        {
+            string elementId;
+            int idx = 0;
+
+            foreach (ListBindItem<TValueType> listItem in Items)
+            {
+                idx++;
+                elementId = _groupName + idx.ToString();
+
+                <div class="mdc-touch-target-wrapper">
+                    <div class="mdc-radio mdc-radio--touch">
+                        <input class="mdc-radio__native-control" type="radio" id="@elementId" name="@_groupName"
+                               checked="@(Value.Equals(listItem.Value))"
+                               @onchange="async eventArgs => { await OnChange(listItem.Value); }">
+                        <div class="mdc-radio__background">
+                            <div class="mdc-radio__outer-circle"></div>
+                            <div class="mdc-radio__inner-circle"></div>
+                        </div>
+                        <div class="mdc-radio__ripple"></div>
+                    </div>
+                </div>
+                <label for="@elementId">@listItem.Text</label>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public TValueType Value { get; set; }
+    [Parameter]
+    public IEnumerable<ListBindItem<TValueType>> Items { get; set; }
+    [Parameter]
+    public EventCallback<TValueType> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<TValueType> OnValueChanged { get; set; }
+
+    protected string _groupName { get; set; }
+
+    protected async Task OnChange(TValueType itemValue)
+    {
+        await this.ValueChanged.InvokeAsync(itemValue);
+        await this.OnValueChanged.InvokeAsync(itemValue);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this._groupName = Guid.NewGuid().ToString();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+}

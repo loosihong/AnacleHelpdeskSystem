@@ -1,0 +1,79 @@
+﻿@typeparam TValueType
+
+<div style="width:100%; display:grid;">
+    <label class="caption">@Caption</label>
+    <div class="mdc-form-field" style="display:block;">
+        @if (Items == null)
+        {
+            <p>Loading ...</p>
+        }
+        else
+        {
+            string elementId;
+            int idx = 0;
+
+            foreach (ListBindItem<TValueType> listItem in Items)
+            {
+                idx++;
+                elementId = _groupName + idx.ToString();
+
+                <div class="mdc-touch-target-wrapper">
+                    <div class="mdc-checkbox mdc-checkbox--touch">
+                        <input type="checkbox" class="mdc-checkbox__native-control" id="@elementId" checked="@(Value?.Contains(listItem.Value))"
+                               @onchange="async eventArgs => { await OnChange(listItem.Value, (bool)eventArgs.Value); }" />
+                        <div class="mdc-checkbox__background">
+                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                            </svg>
+                            <div class="mdc-checkbox__mixedmark"></div>
+                        </div>
+                        <div class="mdc-checkbox__ripple"></div>
+                    </div>
+                </div>
+                <label for="@elementId">@listItem.Text</label>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public List<TValueType> Value { get; set; }
+    [Parameter]
+    public IEnumerable<ListBindItem<TValueType>> Items { get; set; }
+    [Parameter]
+    public EventCallback<List<TValueType>> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<List<TValueType>> OnValueChanged { get; set; }
+
+    protected string _groupName { get; set; }
+
+    protected async Task OnChange(TValueType itemValue, bool isChecked)
+    {
+        if (isChecked)
+        {
+            this.Value.Add(itemValue);
+        }
+        else
+        {
+            this.Value.Remove(itemValue);
+        }
+
+        await this.ValueChanged.InvokeAsync(this.Value);
+        await this.OnValueChanged.InvokeAsync(this.Value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this._groupName = Guid.NewGuid().ToString();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+}

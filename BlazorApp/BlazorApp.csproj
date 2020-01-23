@@ -6,4 +6,10 @@
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialDesignComponentLibrary\MaterialDesignComponentLibrary.csproj" />
+    <ProjectReference Include="..\SharedModelLibrary\SharedModelLibrary.csproj" />
+    <ProjectReference Include="..\WebAPI\WebAPI.csproj" />
+  </ItemGroup>
+
 </Project>

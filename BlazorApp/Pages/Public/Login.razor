@@ -1,0 +1,12 @@
+﻿@page "/"
+@layout EmptyLayout;
+@inject NavigationManager NavigationManager
+
+<MDCButton @onclick="LoginAuthentication">Login</MDCButton>
+
+@code {
+    protected void LoginAuthentication()
+    {
+        NavigationManager.NavigateTo("home");
+    }
+}

@@ -1,0 +1,25 @@
+﻿@inject IJSRuntime JSRuntime
+
+<header class="mdc-top-app-bar mdc-top-app-bar--fixed" @ref="_elementRef">
+    <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">@ChildContent</span>
+        </section>
+    </div>
+</header>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected ElementReference _elementRef { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Interop.AppTopBar_Init", this._elementRef);
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿@if (_tabBar?.SelectedTab == this || _tabBar?.SelectedTab == null)
+{
+    <div class="tab">@ChildContent</div>
+}
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    public int TabIndex { get; internal set; }
+
+    [CascadingParameter]
+    protected MDCTabBar _tabBar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (this._tabBar != null)
+        {
+            this._tabBar.AddTab(this);
+        }
+    }
+}

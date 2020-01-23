@@ -1,0 +1,95 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div style="width: 100%">
+    @if (ControlType == EnumControlType.Date || ControlType == EnumControlType.DateTime)
+    {
+        <div class="mdc-text-field  mdc-text-field--outlined" @ref="_elementDateRef">
+            <input type="date" class="mdc-text-field__input" value="@Value?.ToString("yyyy-MM-dd")"
+                   @onchange="async eventArgs => { await OnChange(EnumControlType.Date, Convert.ToDateTime(eventArgs.Value)); }">
+            <div class="mdc-line-ripple"></div>
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    <label class="mdc-floating-label">@Caption</label>
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+    }
+    @if (ControlType == EnumControlType.DateTime || ControlType == EnumControlType.Time)
+    {
+        <div class="mdc-text-field  mdc-text-field--outlined" @ref="_elementTimeRef">
+            <input type="time" class="mdc-text-field__input" value="@Value?.ToString("hh:mm tt")"
+                   @onchange="async eventArgs => { await OnChange(EnumControlType.Time, Convert.ToDateTime(eventArgs.Value)); }">
+            <div class="mdc-line-ripple"></div>
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                @if (ControlType == EnumControlType.Time)
+                {
+                    <div class="mdc-notched-outline__notch">
+                        <label class="mdc-floating-label">@Caption</label>
+                    </div>
+                }
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public DateTime? Value { get; set; }
+    [Parameter]
+    public EventCallback<DateTime?> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<DateTime?> OnValueChanged { get; set; }
+    [Parameter]
+    public EnumControlType ControlType { get; set; }
+
+    public enum EnumControlType { Date, DateTime, Time };
+
+    protected ElementReference _elementDateRef { get; set; }
+    protected ElementReference _elementTimeRef { get; set; }
+
+    protected async Task OnChange(EnumControlType controlType, DateTime? value)
+    {
+        DateTime? dateTimeValue = null;
+
+        if (value.HasValue)
+        {
+            if (controlType == EnumControlType.Date)
+            {
+                dateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day,
+                    this.Value.Value.Hour, this.Value.Value.Minute, this.Value.Value.Second);
+            }
+            else if (controlType == EnumControlType.Time)
+            {
+                dateTimeValue = new DateTime(this.Value.Value.Year, this.Value.Value.Month, this.Value.Value.Day,
+                    value.Value.Hour, value.Value.Minute, value.Value.Second);
+            }
+        }
+
+        await this.ValueChanged.InvokeAsync(dateTimeValue);
+        await this.OnValueChanged.InvokeAsync(dateTimeValue);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (this.ControlType == EnumControlType.Date ||
+                this.ControlType == EnumControlType.DateTime)
+            {
+                await JSRuntime.InvokeVoidAsync("Interop.TextField_Init", this._elementDateRef);
+            }
+
+            if (this.ControlType == EnumControlType.DateTime ||
+                this.ControlType == EnumControlType.Time)
+            {
+                await JSRuntime.InvokeVoidAsync("Interop.TextField_Init", this._elementTimeRef);
+            }
+        }
+    }
+}

@@ -1,0 +1,77 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="mdc-tab-bar" @ref="_elementRef">
+    <div class="mdc-tab-scroller">
+        <div class="mdc-tab-scroller__scroll-area">
+            <div class="mdc-tab-scroller__scroll-content">
+                @foreach (MDCTab tab in _tabList)
+                {
+                    <button class="mdc-tab" tabindex="@tab.TabIndex"
+                            @onclick="async () => { await SelectTab(tab); }">
+                        <span class="mdc-tab__content">
+                            <span class="mdc-tab__text-label">@tab.Caption</span>
+                        </span>
+                        <span class="mdc-tab-indicator">
+                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                        </span>
+                        <span class="mdc-tab__ripple"></span>
+                    </button>
+                }
+                <button class="mdc-tab" tabindex="@_tabList.Count"
+                        @onclick="async () => { await SelectTab(null); }">
+                    <span class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Summary</span>
+                    </span>
+                    <span class="mdc-tab-indicator">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <span class="mdc-tab__ripple"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tablist">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    public MDCTab SelectedTab { get; protected set; }
+
+    protected ElementReference _elementRef { get; set; }
+    protected List<MDCTab> _tabList { get; set; }
+
+    internal void AddTab(MDCTab tab)
+    {
+        if (this._tabList.Count == 0)
+        {
+            this.SelectedTab = tab;
+        }
+
+        tab.TabIndex = this._tabList.Count;
+        this._tabList.Add(tab);
+        StateHasChanged();
+    }
+
+    public async Task SelectTab(MDCTab selectedTab)
+    {
+        this.SelectedTab = selectedTab;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this._tabList = new List<MDCTab>();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Interop.TabBar_Init", this._elementRef);
+        }
+    }
+}

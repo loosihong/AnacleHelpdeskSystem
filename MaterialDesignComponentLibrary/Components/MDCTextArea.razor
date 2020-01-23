@@ -1,0 +1,40 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="mdc-text-field mdc-text-field--textarea mdc-text-field--fullwidth" @ref="_elementRef">
+    <div class="mdc-text-field-character-counter">0 / 140</div>
+    <textarea id="textarea" class="mdc-text-field__input" rows="8" cols="40" maxlength="140" value="@Value" @onchange="OnChange"></textarea>
+    <div class="mdc-notched-outline">
+        <div class="mdc-notched-outline__leading"></div>
+        <div class="mdc-notched-outline__notch">
+            <label for="textarea" class="mdc-floating-label">@Caption</label>
+        </div>
+        <div class="mdc-notched-outline__trailing"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public string Value { get; set; }
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<string> OnValueChanged { get; set; }
+
+    protected ElementReference _elementRef { get; set; }
+
+    protected async Task OnChange(ChangeEventArgs args)
+    {
+        await this.ValueChanged.InvokeAsync(args.Value.ToString());
+        await this.OnValueChanged.InvokeAsync(args.Value.ToString());
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Interop.TextField_Init", this._elementRef);
+        }
+    }
+}

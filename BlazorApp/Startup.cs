@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BlazorApp.Data;
+using BlazorApp.Services.AnacleHelpdeskService;
 
 namespace BlazorApp
 {
@@ -27,7 +27,7 @@ namespace BlazorApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddHttpClient<AnacleHelpdeskService>(client => { client.BaseAddress = new Uri("http://localhost:5000"); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

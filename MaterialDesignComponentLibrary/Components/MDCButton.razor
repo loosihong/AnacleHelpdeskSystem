@@ -1,0 +1,26 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="mdc-touch-target-wrapper">
+    <button class="mdc-button mdc-button--raised mdc-button--touch" @ref="_elementRef" @onclick="OnClick">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">@ChildContent</span>
+        <div class="mdc-button__touch"></div>
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    protected ElementReference _elementRef { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Interop.Button_Init", this._elementRef);
+        }
+    }
+}

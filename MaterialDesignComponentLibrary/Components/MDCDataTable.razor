@@ -1,0 +1,113 @@
+﻿@inject IJSRuntime JSRuntime
+@typeparam TValueType
+
+@if (HeaderTemplate == null ||
+RowTemplate == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="mdc-data-table" @ref="_elementRef">
+        <table class="mdc-data-table__table">
+            <thead>
+                <tr class="mdc-data-table__header-row">
+                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--checkbox" role="columnheader" scope="col">
+                        <div class="mdc-checkbox mdc-data-table__header-row-checkbox">
+                            <input type="checkbox" class="mdc-checkbox__native-control"
+                                   @onchange="async eventArgs => { await OnAllCheckBoxChange((bool)eventArgs.Value); }" />
+                            <div class="mdc-checkbox__background">
+                                <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                                    <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                                </svg>
+                                <div class="mdc-checkbox__mixedmark"></div>
+                            </div>
+                        </div>
+                    </th>
+                    @HeaderTemplate
+                </tr>
+            </thead>
+            <tbody class="mdc-data-table__content">
+                @foreach (TValueType item in Data)
+                {
+                    <tr class="mdc-data-table__row">
+                        <td class="mdc-data-table__cell mdc-data-table__cell--checkbox">
+                            <div class="mdc-checkbox mdc-data-table__row-checkbox">
+                                <input type="checkbox" class="mdc-checkbox__native-control"
+                                       @onchange="async eventArgs => { await OnCheckBoxChange(item, (bool)eventArgs.Value); }" />
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark" viewbox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                        </td>
+                        @RowTemplate(item)
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public IEnumerable<TValueType> Data { get; set; }
+    [Parameter]
+    public RenderFragment HeaderTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<TValueType> RowTemplate { get; set; }
+    [Parameter]
+    public EventCallback<List<TValueType>> OnSelectedDataChanged { get; set; }
+
+
+    protected ElementReference _elementRef { get; set; }
+    protected List<TValueType> _selectedData { get; set; }
+
+    public List<TValueType> GetSelectedData()
+    {
+        return this._selectedData;
+    }
+
+    protected async Task OnCheckBoxChange(TValueType item, bool isChecked)
+    {
+        if (isChecked)
+        {
+            this._selectedData.Add(item);
+        }
+        else
+        {
+            this._selectedData.Remove(item);
+        }
+
+        await this.OnSelectedDataChanged.InvokeAsync(this._selectedData);
+    }
+
+    protected async Task OnAllCheckBoxChange(bool isChecked)
+    {
+        this._selectedData.Clear();
+
+        if (isChecked)
+        {
+            this._selectedData.AddRange(this.Data);
+        }
+
+        await this.OnSelectedDataChanged.InvokeAsync(this._selectedData);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this._selectedData = new List<TValueType>();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<object>("Interop.DataTable_Init", this._elementRef);
+        }
+    }
+}

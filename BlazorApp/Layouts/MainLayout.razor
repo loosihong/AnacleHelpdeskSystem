@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+@inject AnacleHelpdeskService HelpdeskService
+
+<MDCAppTop>App Top Bar</MDCAppTop>
+<MDCDrawer Items="_drawerItemList">
+    @Body
+</MDCDrawer>
+
+@code
+{
+    private bool _dataLoaded = false;
+    private List<DrawerBindItem> _drawerItemList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (this._drawerItemList == null)
+        {
+            Task<List<DrawerBindItem>> drawerItemListTask = HelpdeskService.GetMenuListAsync();
+            this._drawerItemList = await drawerItemListTask;
+        }
+    }
+}

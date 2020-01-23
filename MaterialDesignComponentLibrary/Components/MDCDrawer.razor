@@ -1,0 +1,46 @@
+﻿<aside class="mdc-drawer mdc-drawer--dismissible mdc-top-app-bar--fixed-adjust mdc-drawer--open">
+    <div class="mdc-drawer__content">
+        @if (Items == null)
+        {
+            <p>Loading ...</p>
+        }
+        else
+        {
+            int i = 0;
+
+            <div class="mdc-list">
+                @foreach (DrawerBindItem drawerItem in Items)
+                {
+                    <a class="mdc-list-item @(i == _selectedIndex ? "mdc-list-item--activated" : string.Empty)" href="@drawerItem.Url"
+                       @onclick="async () => { await SelectItem(i); }">
+                        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">@drawerItem.IconName</i>
+                        <span class="mdc-list-item__text">@drawerItem.Text</span>
+                    </a>
+                    i++;
+                }
+            </div>
+        }
+    </div>
+</aside>
+<main class="mdc-drawer-app-content mdc-top-app-bar--fixed-adjust">
+    @ChildContent
+</main>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public List<DrawerBindItem> Items { get; set; }
+
+    protected int _selectedIndex { get; set; }
+
+    public async Task SelectItem(int index)
+    {
+        this._selectedIndex = index;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this._selectedIndex = 0;
+    }
+}

@@ -36,22 +36,7 @@ window.Interop = {
   },
   
   TabBar_Init: function (element) {
-    var tabBar = new MDCTabBar(element);
-    
-    /*tabBar.listen('MDCTabBar:activated', (activatedEvent) => {
-      var tabs = document.querySelectorAll('.tab');
-      
-      if (tabs) {
-        tabs.forEach((tabEl, index) => {
-          if (index === activatedEvent.detail.index || activatedEvent.detail.index === tabs.length) {
-            tabEl.classList.remove('hide');
-          } else {
-            tabEl.classList.add('hide');
-          }
-        });
-      }
-    });*/
-    
+    var tabBar = new MDCTabBar(element);    
     var tabScrollerEl = document.querySelector('.mdc-tab-scroller');
     var tabScroller = new MDCTabScroller(tabScrollerEl);
     

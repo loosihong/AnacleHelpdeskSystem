@@ -1,0 +1,62 @@
+﻿@inject IJSRuntime JSRuntime
+@typeparam TValueType
+
+@if (Items == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div class="mdc-select mdc-select--outlined" @ref="_elementRef">
+        <div class="mdc-select__anchor">
+            <i class="mdc-select__dropdown-icon"></i>
+            <div class="mdc-select__selected-text" aria-labelledby="outlined-select-label"></div>
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    <label id="outlined-select-label" class="mdc-floating-label">@Caption</label>
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+        <div class="mdc-select__menu mdc-menu mdc-menu-surface">
+            <ul class="mdc-list">
+                <li class="mdc-list-item" data-value=""></li>
+                @foreach (ListBindItem<TValueType> listItem in Items)
+                {
+                    <li class="mdc-list-item" data-value="@listItem.Value"
+                        @onclick="async eventArgs => { await OnClick(listItem.Value); }">@listItem.Text</li>
+                    }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Caption { get; set; }
+    [Parameter]
+    public TValueType Value { get; set; }
+    [Parameter]
+    public IEnumerable<ListBindItem<TValueType>> Items { get; set; }
+    [Parameter]
+    public EventCallback<TValueType> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<TValueType> OnValueChanged { get; set; }
+
+    protected ElementReference _elementRef { get; set; }
+
+    public async Task OnClick(TValueType selectedValue)
+    {
+        await this.ValueChanged.InvokeAsync(selectedValue);
+        await this.OnValueChanged.InvokeAsync(selectedValue);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<object>("Interop.Select_Init", this._elementRef, this.Value.ToString());
+        }
+    }
+}
